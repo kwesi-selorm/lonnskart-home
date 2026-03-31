@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lonnskart — Salary Transparency, Mapped</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan: #13A4EC;
+      --green: #4ADE80;
+      --dark: #0A0F1A;
+      --mid: #111827;
+      --card: #161E2E;
+      --border: rgba(255,255,255,0.07);
+      --text: #F0F6FF;
+      --muted: #7B90B2;
+      --font: 'Bricolage Grotesque', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--dark);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── BG MESH ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+              radial-gradient(ellipse 60% 50% at 20% 10%, rgba(19,164,236,0.12) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 40% at 80% 80%, rgba(74,222,128,0.09) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 80px;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 800px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 24px;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.65;
+      font-weight: 400;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    /* ── APP DOWNLOAD BUTTONS ── */
+    .download-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .store-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      border-radius: 14px;
+      text-decoration: none;
+      transition: all 0.22s ease;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .store-btn:hover {
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(19,164,236,0.15);
+    }
+
+    .store-btn svg { flex-shrink: 0; }
+
+    .store-btn-text { text-align: left; line-height: 1.2; }
+    .store-btn-sub { font-size: 0.7rem; color: var(--muted); font-weight: 500; }
+    .store-btn-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+
+    /* ── HOW IT WORKS ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 96px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      /*max-width: 540px;*/
+      line-height: 1.1;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .step {
+      padding: 32px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .step:hover {
+      border-color: rgba(19,164,236,0.35);
+      transform: translateY(-4px);
+    }
+
+    .step-top {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .step-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(19,164,236,0.1);
+      border: 1px solid rgba(19,164,236,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      /*letter-spacing: -0.01em;*/
+    }
+
+    .step p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      position: relative;
+      z-index: 1;
+      margin: 0 24px 96px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(19,164,236,0.15) 0%, rgba(74,222,128,0.1) 100%);
+      border: 1px solid rgba(19,164,236,0.25);
+      padding: 64px 40px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 400px; height: 200px;
+      background: radial-gradient(ellipse, rgba(19,164,236,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-banner h2 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .cta-banner p {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 36px;
+      position: relative;
+    }
+
+    .cta-banner .download-row { margin-top: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--cyan); }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    /* ── COMING SOON TOOLTIP ── */
+    .store-btn-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .store-btn-wrap .tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: var(--card);
+      /*border: 1px solid rgba(19,164,236,0.3);*/
+      color: var(--cyan);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 8px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .store-btn-wrap.show-tooltip .tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .store-btn.disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-cta .btn-ghost { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      footer { flex-direction: column; align-items: center; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+      .cta-banner { margin: 0 16px 64px; padding: 48px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Understand your worth.<br/><em>Negotiate with confidence.</em></h1>
+
+  <p class="hero-sub">
+    Discover real salary data across countries, cities, and sectors—all powered by anonymous, community-contributed data.
+  </p>
+
+  <div class="download-row">
+    <!-- App Store -->
+    <a class="store-btn" href="https://apps.apple.com/no/app/lonnskart/id6758669145" target="_blank" rel="noopener" aria-label="Download on the App Store">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M16.46 12.01c-.02-2.13 1.73-3.16 1.81-3.21-1-1.46-2.54-1.66-3.09-1.68-1.31-.13-2.57.78-3.23.78-.67 0-1.7-.76-2.8-.74-1.44.02-2.77.84-3.51 2.13-1.5 2.61-.38 6.47 1.07 8.58.72 1.03 1.57 2.19 2.69 2.15 1.08-.04 1.49-.69 2.8-.69 1.3 0 1.67.69 2.81.67 1.16-.02 1.9-1.05 2.61-2.09.83-1.19 1.17-2.35 1.19-2.41-.03-.01-2.27-.87-2.35-3.49z" fill="#fff"/>
+        <path d="M14.29 5.55c.59-.72.99-1.72.88-2.72-.85.04-1.89.57-2.5 1.28-.55.63-1.03 1.65-.9 2.63.94.07 1.93-.47 2.52-1.19z" fill="#fff"/>
+      </svg>
+      <div class="store-btn-text">
+        <div class="store-btn-sub">Download on the</div>
+        <div class="store-btn-name">App Store</div>
+      </div>
+    </a>
+
+    <!-- Google Play -->
+    <div class="store-btn-wrap" id="gplay-hero">
+      <span class="tooltip">Coming soon</span>
+      <a class="store-btn disabled" href="#" onclick="showTooltip('gplay-hero'); return false;" aria-label="Get it on Google Play">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M3.18 23.44c.3.16.65.17.96.02l10.9-6.3-2.32-2.32-9.54 8.6z" fill="#EA4335"/>
+          <path d="M20.64 10.23L17.9 8.68 15.3 11.3l2.6 2.6 2.76-1.56c.79-.44.79-1.67-.02-2.11z" fill="#FBBC04"/>
+          <path d="M3.18.56C2.87.4 2.52.41 2.22.58L12.72 11.3l2.58-2.58L3.18.56z" fill="#4285F4"/>
+          <path d="M2.22 23.42c.3.17.65.18.96.02L12.72 11.3 2.22.58c-.3.17-.5.48-.5.85v21.14c0 .37.2.69.5.85z" fill="#34A853"/>
+        </svg>
+        <div class="store-btn-text">
+          <div class="store-btn-sub">Get it on</div>
+          <div class="store-btn-name">Google Play</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title">Transparency built on community trust</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-top">
+        <div class="step-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#13A4EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <h3>Share your salaries</h3>
+      </div>
+      <p>Contribute your own salary data anonymously. Understand your salary progression over the years.</p>
+    </div>
+    <div class="step">
+      <div class="step-top">
+        <div class="step-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#13A4EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <h3>Explore salaries</h3>
+      </div>
+      <p>Browse salary data with information including job category, sector, and city. Filter to find exactly what you're looking for.</p>
+    </div>
+    <div class="step">
+      <div class="step-top">
+        <div class="step-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#13A4EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>Make informed decisions</h3>
+      </div>
+      <p>Use real market data to negotiate confidently, plan your next career move, or benchmark your current role against the market.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <h2>Start exploring salaries today</h2>
+  <p>Available on iOS and Android</p>
+  <div class="download-row">
+    <a class="store-btn" href="https://apps.apple.com/no/app/lonnskart/id6758669145" target="_blank" rel="noopener">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M16.46 12.01c-.02-2.13 1.73-3.16 1.81-3.21-1-1.46-2.54-1.66-3.09-1.68-1.31-.13-2.57.78-3.23.78-.67 0-1.7-.76-2.8-.74-1.44.02-2.77.84-3.51 2.13-1.5 2.61-.38 6.47 1.07 8.58.72 1.03 1.57 2.19 2.69 2.15 1.08-.04 1.49-.69 2.8-.69 1.3 0 1.67.69 2.81.67 1.16-.02 1.9-1.05 2.61-2.09.83-1.19 1.17-2.35 1.19-2.41-.03-.01-2.27-.87-2.27-3.49z" fill="#fff"/>
+        <path d="M14.29 5.55c.59-.72.99-1.72.88-2.72-.85.04-1.89.57-2.5 1.28-.55.63-1.03 1.65-.9 2.63.94.07 1.93-.47 2.52-1.19z" fill="#fff"/>
+      </svg>
+      <div class="store-btn-text">
+        <div class="store-btn-sub">Download on the</div>
+        <div class="store-btn-name">App Store</div>
+      </div>
+    </a>
+    <div class="store-btn-wrap" id="gplay-cta">
+      <span class="tooltip">Coming soon</span>
+      <a class="store-btn disabled" href="#" onclick="showTooltip('gplay-cta'); return false;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M3.18 23.44c.3.16.65.17.96.02l10.9-6.3-2.32-2.32-9.54 8.6z" fill="#EA4335"/>
+          <path d="M20.64 10.23L17.9 8.68 15.3 11.3l2.6 2.6 2.76-1.56c.79-.44.79-1.67-.02-2.11z" fill="#FBBC04"/>
+          <path d="M3.18.56C2.87.4 2.52.41 2.22.58L12.72 11.3 2.22.58c-.3.17-.5.48-.5.85v21.14c0 .37.2.69.5.85z" fill="#4285F4"/>
+          <path d="M2.22 23.42c.3.17.65.18.96.02L12.72 11.3 2.22.58c-.3.17-.5.48-.5.85v21.14c0 .37.2.69.5.85z" fill="#34A853"/>
+        </svg>
+        <div class="store-btn-text">
+          <div class="store-btn-sub">Get it on</div>
+          <div class="store-btn-name">Google Play</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://legal.lonnskart.com/privacy-policy.html" target="_blank">Privacy Policy</a>
+    <a href="https://legal.lonnskart.com/terms-of-service.html" target="_blank">Terms</a>
+    <a href="https://legal.lonnskart.com/support.html" target="_blank">Support</a>
+    <a href="https://legal.lonnskart.com/delete-account.html" target="_blank">Delete Account</a>
+  </div>
+  <span class="footer-copy">© 2026 Lonnskart</span>
+</footer>
+
+<script>
+  function showTooltip(id) {
+    const wrap = document.getElementById(id);
+    wrap.classList.add('show-tooltip');
+    setTimeout(() => wrap.classList.remove('show-tooltip'), 2000);
+  }
+</script>
+</body>
+</html>
